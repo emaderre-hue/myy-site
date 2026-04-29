@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>أبيان كابيتال — استثمر في الفريق المميز</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#0D80E8;--accent2:#3645E8;--accent3:#54BA94;
+  --gold:#D6BA73;--green:#54BA94;
+  --bg:#040610;--bg2:#070c1a;--bg3:#0e1628;
+  --text:#deeaff;--text2:#7a95bb;--text3:#3d5270;
+  --border:rgba(13,128,232,0.12);--border2:rgba(13,128,232,0.25);
+  --card-bg:rgba(10,18,38,0.85);
+  --glow:0 0 50px rgba(13,128,232,0.15);
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── BACKGROUND ── */
+#ai-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.neural-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(13,128,232,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(13,128,232,0.025) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 20%,transparent 100%)}
+.scan-line{position:fixed;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,rgba(13,128,232,.35) 30%,rgba(54,69,232,.35) 70%,transparent);z-index:1;animation:scan 10s linear infinite;pointer-events:none}
+@keyframes scan{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100vh;opacity:0}}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float-up linear infinite;opacity:0}
+@keyframes float-up{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.7}100%{transform:translateY(-5vh) scale(1);opacity:0}}
+.streams{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stream{position:absolute;top:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(13,128,232,.18) 50%,transparent);animation:stream-fall linear infinite;opacity:0}
+@keyframes stream-fall{0%{transform:translateY(-100%);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(100%);opacity:0}}
+
+/* ── OVERLAY ── */
+.overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(2,4,14,.93);backdrop-filter:blur(20px)}
+.overlay.hidden{display:none!important}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MODAL ── */
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,4vw,2.25rem);width:100%;max-width:400px;animation:slideUp .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.modal::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6}
+.modal-logo{display:flex;justify-content:center;margin-bottom:1.1rem}
+.modal-logo img{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(13,128,232,.3))}
+.modal h2{font-size:clamp(18px,4vw,22px);font-weight:900;color:var(--text);text-align:center;margin-bottom:.35rem;letter-spacing:-.5px}
+.modal-sub{font-size:13px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:1.5rem}
+
+/* ── PHONE INPUT ── */
+.phone-row{display:flex;gap:8px;margin-bottom:.4rem}
+.phone-prefix{padding:13px 12px;border-radius:12px;background:rgba(13,128,232,.08);border:1px solid var(--border2);color:var(--text2);font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;white-space:nowrap;flex-shrink:0;direction:ltr;min-width:68px;text-align:center}
+.phone-input{flex:1;padding:13px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--text);font-family:'Cairo',sans-serif;font-size:16px;font-weight:600;outline:none;transition:border-color .2s,box-shadow .2s;direction:ltr;letter-spacing:2px}
+.phone-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(13,128,232,.14)}
+.phone-input::placeholder{color:var(--text3);letter-spacing:0;font-weight:400;font-size:14px}
+.field-label{display:block;font-size:12px;font-weight:600;color:var(--text3);margin-bottom:7px;letter-spacing:.3px}
+.field-err{font-size:12px;color:#f87171;margin-top:5px;min-height:17px}
+
+/* ── BUTTONS ── */
+.btn-primary{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;margin-top:.5rem;-webkit-tap-highlight-color:transparent}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(13,128,232,.4)}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{background:var(--bg3);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none;border:1px solid var(--border)}
+.btn-admin-style{background:linear-gradient(135deg,#D6BA73,#b8972f)}
+.btn-admin-style:hover{box-shadow:0 10px 35px rgba(214,186,115,.35)}
+.btn-ghost{width:100%;padding:11px;border:1px solid var(--border2);border-radius:12px;background:transparent;color:var(--text2);font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;margin-top:.6rem;-webkit-tap-highlight-color:transparent}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.divider{display:flex;align-items:center;gap:10px;margin:1rem 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider span{font-size:11px;color:var(--text3);white-space:nowrap}
+
+/* ── LOADING SPINNER ── */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-left:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 clamp(.75rem,3vw,2rem);height:60px;display:flex;align-items:center;justify-content:space-between;background:rgba(4,6,16,.88);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(13,128,232,.5) 40%,rgba(54,69,232,.5) 60%,transparent)}
+.nav-logo{display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none}
+.nav-logo-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.nav-logo-icon img{width:34px;height:34px;object-fit:contain}
+.nav-logo-text{font-size:clamp(13px,2.5vw,16px);font-weight:800;letter-spacing:-.3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.nav-right{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.nav-user-chip{display:flex;align-items:center;gap:6px;background:rgba(84,186,148,.07);border:1px solid rgba(84,186,148,.2);color:var(--accent3);font-size:11px;padding:4px 10px;border-radius:20px;max-width:150px;overflow:hidden}
+.nav-user-avatar{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),#059669);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.nav-user-num{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}
+.nav-btn{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;transition:all .2s;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent;white-space:nowrap;border:none}
+.nav-btn.admin{background:rgba(214,186,115,.08);border:1px solid rgba(214,186,115,.22);color:var(--gold)}
+.nav-btn.admin:hover{background:rgba(214,186,115,.15)}
+.nav-btn.logout{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.18);color:#f87171}
+.nav-btn.logout:hover{background:rgba(248,113,113,.13)}
+.nav-btn.exit-admin{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.18);color:#f87171}
+.nav-btn.exit-admin:hover{background:rgba(248,113,113,.13)}
+.hidden{display:none!important}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:80px clamp(.75rem,3vw,2rem) 4rem}
+
+/* ── HERO ── */
+.hero{text-align:center;margin-bottom:2.5rem;animation:fadeUp .7s ease both}
+.hero-logo{display:flex;justify-content:center;margin-bottom:1.1rem}
+.hero-logo img{width:clamp(90px,15vw,130px);height:clamp(90px,15vw,130px);object-fit:contain;filter:drop-shadow(0 0 22px rgba(13,128,232,.35))}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(84,186,148,.07);border:1px solid rgba(84,186,148,.2);color:var(--accent3);font-size:clamp(10px,2.5vw,12px);font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:1rem}
+.hero h1{font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;line-height:1.2;color:var(--text);margin-bottom:.7rem;letter-spacing:-1px}
+.hero h1 .hl{background:linear-gradient(120deg,#0D80E8 0%,#3645E8 50%,#54BA94 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(13px,2.5vw,15px);color:var(--text2);max-width:460px;margin:0 auto;line-height:1.75}
+
+/* ── STATS ── */
+.stats-bar{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:2rem;animation:fadeUp .7s .1s ease both}
+.stat-item{padding:14px 1rem;text-align:center;background:var(--bg2);position:relative}
+.stat-item::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+.stat-num{font-size:clamp(20px,4vw,26px);font-weight:800;color:var(--text)}
+.stat-num.ac{color:var(--accent)}
+.stat-label{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── TEAMS GRID ── */
+.teams-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.75rem}
+@media(max-width:640px){.teams-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+@media(min-width:641px) and (max-width:860px){.teams-grid{grid-template-columns:repeat(3,1fr)}}
+
+.team-card{border:1px solid var(--border);border-radius:18px;padding:1.25rem .75rem 1.1rem;cursor:pointer;transition:all .25s ease;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden;backdrop-filter:blur(10px);text-align:center;-webkit-tap-highlight-color:transparent;min-height:155px}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--tc-accent,rgba(13,128,232,.6)),transparent);opacity:0;transition:opacity .25s}
+.team-card::after{content:'';position:absolute;inset:0;border-radius:18px;opacity:0;transition:opacity .25s;background:radial-gradient(circle at 50% -10%,var(--tc-glow,rgba(13,128,232,.1)),transparent 65%)}
+.team-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--glow)}
+.team-card:hover::before,.team-card:hover::after{opacity:1}
+.team-card.selected{border-color:var(--tc-accent,var(--accent));transform:translateY(-3px);box-shadow:0 0 0 1px var(--tc-accent,rgba(13,128,232,.4)),0 0 50px rgba(13,128,232,.2)}
+.team-card.selected::before,.team-card.selected::after{opacity:1}
+.team-card.voted{cursor:default;pointer-events:none;opacity:.72}
+.sel-ring{position:absolute;top:9px;left:9px;width:21px;height:21px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;transition:all .22s;z-index:3}
+.team-card.selected .sel-ring{background:var(--tc-accent,var(--accent));border-color:var(--tc-accent,var(--accent));box-shadow:0 0 10px rgba(13,128,232,.5)}
+.sel-ring svg{width:11px;height:11px;stroke:#fff;stroke-width:2.5;fill:none;opacity:0;transition:opacity .2s}
+.team-card.selected .sel-ring svg{opacity:1}
+.team-icon{width:clamp(52px,8vw,66px);height:clamp(52px,8vw,66px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,4vw,27px);position:relative;z-index:2;transition:transform .25s;border:2px solid rgba(255,255,255,.1);margin:0 auto}
+.team-card:hover .team-icon,.team-card.selected .team-icon{transform:scale(1.08)}
+.team-number{font-size:10px;font-weight:700;position:relative;z-index:2;letter-spacing:1.5px;text-align:center;width:100%}
+.team-name{font-size:clamp(10px,1.8vw,13px);font-weight:800;color:var(--text);text-align:center;position:relative;z-index:2;line-height:1.3;width:100%;word-break:break-word}
+
+/* ── VOTE AREA ── */
+.vote-area{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:2.5rem;animation:fadeUp .7s .28s ease both}
+.vote-btn{width:100%;max-width:340px;padding:15px 28px;font-family:'Cairo',sans-serif;font-size:clamp(14px,3vw,16px);font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .22s;background:linear-gradient(135deg,#0D80E8,#3645E8);color:#fff;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.vote-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 40px rgba(13,128,232,.45)}
+.vote-btn:active:not(:disabled){transform:scale(.97)}
+.vote-btn:disabled{background:var(--bg3);color:var(--text3);cursor:not-allowed;border:1px solid var(--border)}
+.vote-hint{font-size:12px;color:var(--text3);text-align:center}
+
+/* ── AFTER VOTE ── */
+.voted-confirm{display:none;text-align:center;padding:2rem 1.5rem;border:1px solid rgba(84,186,148,.25);border-radius:18px;background:rgba(84,186,148,.04);margin-bottom:2rem}
+.voted-confirm.show{display:block;animation:fadeUp .5s ease both}
+.voted-confirm .check-icon{font-size:48px;margin-bottom:.6rem}
+.voted-confirm h3{font-size:clamp(16px,3.5vw,20px);font-weight:800;color:var(--accent3);margin-bottom:.4rem}
+.voted-confirm p{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* ── RESULTS (admin only) ── */
+.results-section{display:none}
+.results-section.show{display:block;animation:fadeUp .5s ease both}
+.admin-ribbon{display:inline-flex;align-items:center;gap:6px;background:rgba(214,186,115,.1);border:1px solid rgba(214,186,115,.25);color:var(--gold);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:1.1rem}
+.results-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:1.4rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.results-title{font-size:clamp(15px,3vw,18px);font-weight:800;color:var(--text)}
+.results-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.results-total{font-size:12px;color:var(--text3);background:var(--bg3);padding:5px 12px;border-radius:20px;border:1px solid var(--border)}
+.btn-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#f87171;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.btn-danger:hover{background:rgba(248,113,113,.22)}
+.result-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;margin-bottom:8px;background:var(--card-bg);border:1px solid var(--border)}
+.result-row.winner{border-color:rgba(214,186,115,.3);background:rgba(214,186,115,.04)}
+.result-rank{font-size:13px;font-weight:800;color:var(--text3);min-width:24px;text-align:center}
+.result-rank.gold{color:var(--gold)}.result-rank.silver{color:#7a90a8}.result-rank.bronze{color:#8a5e30}
+.result-icon-sm{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid rgba(255,255,255,.1)}
+.result-info{flex:1;min-width:0}
+.result-name-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.result-name{font-size:clamp(11px,2.5vw,13px);font-weight:700;color:var(--text)}
+.badge-winner{font-size:9px;background:rgba(214,186,115,.13);color:var(--gold);border:1px solid rgba(214,186,115,.25);padding:2px 8px;border-radius:10px}
+.bar-wrap{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;background:rgba(13,128,232,.45);transition:width .9s cubic-bezier(.4,0,.2,1);width:0}
+.bar-fill.winner{background:linear-gradient(90deg,var(--gold),#e8d08e)}
+.result-pct-col{text-align:left;min-width:68px}
+.result-pct{font-size:clamp(14px,3vw,17px);font-weight:800;color:var(--text)}
+.result-count{font-size:10px;color:var(--text3);margin-top:1px}
+.voters-section{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.4rem}
+.voters-title{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:.9rem}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.voters-table{width:100%;border-collapse:collapse;min-width:420px}
+.voters-table th{font-size:11px;color:var(--text3);font-weight:600;padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+.voters-table td{font-size:12px;color:var(--text2);padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.voters-table tr:hover td{background:rgba(13,128,232,.03)}
+.v-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#071a12,#0b2a1e);color:var(--green);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:11px 24px;border-radius:50px;border:1px solid rgba(84,186,148,.3);box-shadow:0 8px 35px rgba(84,186,148,.22);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:600;white-space:nowrap;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.warn{background:linear-gradient(135deg,#1a0e00,#2e1a00);color:var(--gold);border-color:rgba(214,186,115,.3);box-shadow:0 8px 35px rgba(214,186,115,.18)}
+.toast.err{background:linear-gradient(135deg,#1a0606,#2e0e0e);color:#f87171;border-color:rgba(248,113,113,.3);box-shadow:0 8px 35px rgba(248,113,113,.18)}
+
+footer{text-align:center;padding:1.5rem 1rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);margin-top:3rem;position:relative;z-index:2}
+
+@media(max-width:480px){
+  nav{height:56px}
+  .page{padding:68px .75rem 3rem}
+  .team-card{min-height:140px}
+  .vote-btn{max-width:100%}
+  .modal{border-radius:20px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="ai-bg"></canvas>
+<div class="neural-grid"></div>
+<div class="scan-line"></div>
+<div class="particles" id="particles"></div>
+<div class="streams" id="streams"></div>
+
+<!-- ══ LOADING OVERLAY ══ -->
+<div class="overlay" id="loadingOverlay">
+  <div style="text-align:center">
+    <img src="logo_header.png" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(13,128,232,.4));margin-bottom:1.2rem"/>
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:.5rem">أبيان كابيتال</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">جاري تحميل بيانات التصويت...</div>
+    <div style="display:inline-block;width:32px;height:32px;border:2.5px solid rgba(13,128,232,.25);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite"></div>
+  </div>
+</div>
+
+<!-- ══ LOGIN OVERLAY ══ -->
+<div class="overlay hidden" id="loginOverlay">
+  <div class="modal">
+    <div class="modal-logo"><img src="logo_header.png" alt="أبيان كابيتال"/></div>
+    <h2>أبيان كابيتال</h2>
+    <p class="modal-sub">أدخل رقم جوالك للمشاركة في التصويت.<br>يُسمح بتصويت واحد لكل رقم.</p>
+    <label class="field-label">رقم الجوال السعودي</label>
+    <div class="phone-row">
+      <div class="phone-prefix">🇸🇦 +966</div>
+      <input class="phone-input" type="tel" id="phoneInput"
+             placeholder="5XXXXXXXX" maxlength="9" inputmode="numeric"
+             oninput="this.value=this.value.replace(/[^0-9]/g,'');clearPhoneErr()"
+             onkeydown="if(event.key==='Enter')loginVisitor()"/>
+    </div>
+    <div class="field-err" id="phoneErr"></div>
+    <button class="btn-primary" id="loginBtn" onclick="loginVisitor()">دخول والمشاركة ←</button>
+    <div class="divider"><span>أو</span></div>
+    <button class="btn-ghost" onclick="showAdminLogin()">🛡️ دخول الأدمن</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN LOGIN OVERLAY ══ -->
+<div class="overlay hidden" id="adminLoginOverlay">
+  <div class="modal">
+    <div style="text-align:center;margin-bottom:1.1rem"><span style="font-size:42px">🛡️</span></div>
+    <h2>لوحة الإدارة</h2>
+    <p class="modal-sub">أدخل كلمة المرور للوصول إلى النتائج الحية وإدارة الأصوات.</p>
+    <label class="field-label">كلمة المرور</label>
+    <input type="password" id="adminPassInput" placeholder="••••••••"
+           style="width:100%;padding:13px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:.25rem"
+           onkeydown="if(event.key==='Enter')adminLogin()"
+           oninput="document.getElementById('adminErr').textContent=''"/>
+    <div class="field-err" id="adminErr"></div>
+    <button class="btn-primary btn-admin-style" onclick="adminLogin()">دخول الإدارة</button>
+    <button class="btn-ghost" onclick="backToLogin()">← العودة</button>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon"><img src="logo_nav.png" alt="أبيان"/></div>
+    <span class="nav-logo-text">أبيان كابيتال</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user-chip hidden" id="navUserChip">
+      <div class="nav-user-avatar" id="navUserAvatar">5</div>
+      <span class="nav-user-num" id="navUserNum">—</span>
+    </div>
+    <button class="nav-btn logout hidden" id="navLogoutBtn" onclick="logoutVisitor()">↩ خروج</button>
+    <button class="nav-btn admin hidden" id="adminNavBtn" onclick="showAdminLogin()">🛡️ الإدارة</button>
+    <button class="nav-btn exit-admin hidden" id="exitAdminBtn" onclick="exitAdmin()">✕ خروج الأدمن</button>
+  </div>
+</nav>
+
+<!-- ══ MAIN PAGE ══ -->
+<main class="page">
+  <div class="hero">
+    <div class="hero-logo"><img src="logo_header.png" alt="أبيان كابيتال"/></div>
+    <div class="hero-tag">🏆 منافسة الفرق - استثمار أبيان</div>
+    <h1>استثمر في<br><span class="hl">الفريق المميز</span></h1>
+    <p>اختر الفريق الذي تؤمن بقدراته واستثمر فيه. كل صوت يرسم مسار الفوز!</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num ac" id="totalCount">0</div>
+      <div class="stat-label">إجمالي الاستثمارات</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-label">فرق منافسة</div>
+    </div>
+  </div>
+
+  <div class="teams-grid" id="teamsGrid"></div>
+
+  <div class="vote-area" id="voteArea">
+    <button class="vote-btn" id="voteBtn" disabled onclick="submitVote()">اختر فريقاً أولاً</button>
+    <span class="vote-hint" id="voteHint">اضغط على الفريق المفضل لديك ثم استثمر</span>
+  </div>
+
+  <div class="voted-confirm" id="votedConfirm">
+    <div class="check-icon">✅</div>
+    <h3 id="confirmedMsg">تم تسجيل استثمارك!</h3>
+    <p>شكراً لمشاركتك. ستُعلَن النتائج عند انتهاء فترة التصويت.</p>
+  </div>
+
+  <!-- ADMIN RESULTS — hidden from normal users -->
+  <div class="results-section" id="resultsSection">
+    <div class="admin-ribbon">🛡️ لوحة الأدمن — النتائج الحية</div>
+    <div class="results-header">
+      <div class="results-title">📊 نتائج الاستثمار</div>
+      <div class="results-controls">
+        <div class="results-total" id="totalVotesLabel">0 استثمار</div>
+        <button class="btn-danger" onclick="adminResetAll()">🗑️ إعادة تعيين الكل</button>
+      </div>
+    </div>
+    <div id="resultsList"></div>
+    <div class="voters-section">
+      <div class="voters-title">👥 سجل المستثمرين — (<span id="voterCount">0</span>)</div>
+      <div class="table-scroll">
+        <table class="voters-table">
+          <thead>
+            <tr>
+              <th>#</th><th>رقم الجوال</th><th>الفريق</th><th>التوقيت</th><th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="votersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>استثمارك في محله 2026</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   CONFIG — GitHub Gist as backend database
+════════════════════════════════════════════ */
+const GIST_ID    = '1fae2f1477560df32188b623bbecbc5d';
+const GH_TOKEN   = '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';
+const FILE_NAME  = 'votes.json';
+const ADMIN_PASS = 'admin2025';
+const API_BASE   = `https://api.github.com/gists/${GIST_ID}`;
+
+/* ════ TEAMS ════ */
+const teams = [
+  {id:1,name:'فريق عبدالعزيز المهيزع',num:'TEAM 01',icon:'🤖',bg:'linear-gradient(145deg,#0d0820,#180d38)',accent:'#a78bfa',iconBg:'rgba(167,139,250,0.15)'},
+  {id:2,name:'فريق أحمد عثمان',        num:'TEAM 02',icon:'🧠',bg:'linear-gradient(145deg,#1a0808,#2e1010)',accent:'#f87171',iconBg:'rgba(248,113,113,0.15)'},
+  {id:3,name:'فريق إبراهيم الزكري',    num:'TEAM 03',icon:'💡',bg:'linear-gradient(145deg,#061218,#0c2030)',accent:'#38bdf8',iconBg:'rgba(56,189,248,0.15)'},
+  {id:4,name:'فريق محمد الهاشم',       num:'TEAM 04',icon:'⚙️',bg:'linear-gradient(145deg,#061408,#0c2412)',accent:'#4ade80',iconBg:'rgba(74,222,128,0.15)'},
+  {id:5,name:'فريق محمد وقاص',         num:'TEAM 05',icon:'🔬',bg:'linear-gradient(145deg,#16120a,#2a2010)',accent:'#fbbf24',iconBg:'rgba(251,191,36,0.15)'},
+  {id:6,name:'فريق أحمد عفيفي',        num:'TEAM 06',icon:'📡',bg:'linear-gradient(145deg,#080c1a,#101830)',accent:'#0D80E8',iconBg:'rgba(13,128,232,0.15)'},
+  {id:7,name:'فريق هادي الغانم',       num:'TEAM 07',icon:'🛸',bg:'linear-gradient(145deg,#120614,#200a24)',accent:'#e879f9',iconBg:'rgba(232,121,249,0.15)'},
+];
+
+/* ════ STATE ════ */
+let dbData       = { votes: {1:0,2:0,3:0,4:0,5:0,6:0,7:0}, voters: [] };
+let currentUser  = null;   // { phone, key }
+let isAdmin      = false;
+let selected     = null;
+let hasVoted     = false;
+let isSaving     = false;
+
+/* ════════════════════════════════════════════
+   GIST API — READ
+════════════════════════════════════════════ */
+async function gistRead() {
+  const r = await fetch(API_BASE, {
+    headers: {
+      'Authorization': `token ${GH_TOKEN}`,
+      'Accept': 'application/vnd.github+json'
+    }
+  });
+  if (!r.ok) throw new Error(`Gist read failed: ${r.status}`);
+  const json = await r.json();
+  const content = json.files[FILE_NAME]?.content;
+  if (!content) throw new Error('votes.json not found in Gist');
+  return JSON.parse(content);
+}
+
+/* ════════════════════════════════════════════
+   GIST API — WRITE
+════════════════════════════════════════════ */
+async function gistWrite(data) {
+  const r = await fetch(API_BASE, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `token ${GH_TOKEN}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      files: {
+        [FILE_NAME]: { content: JSON.stringify(data, null, 2) }
+      }
+    })
+  });
+  if (!r.ok) {
+    const err = await r.text();
+    throw new Error(`Gist write failed: ${r.status} — ${err}`);
+  }
+  return true;
+}
+
+/* ════ HELPERS ════ */
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.className = 'toast';
+  if (type === 'warn') t.classList.add('warn');
+  if (type === 'err')  t.classList.add('err');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3500);
+}
+function clearPhoneErr() { document.getElementById('phoneErr').textContent = ''; }
+
+/* ════ NEURAL CANVAS ════ */
+(function() {
+  const cv = document.getElementById('ai-bg'), ctx = cv.getContext('2d');
+  let W, H, nodes = [], raf;
+  function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  function init() {
+    nodes = [];
+    const n = Math.min(Math.floor(W * H / 18000), 55);
+    for (let i = 0; i < n; i++) nodes.push({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-.5)*.3, vy: (Math.random()-.5)*.3,
+      r: Math.random()*2.2+1, ph: Math.random()*Math.PI*2,
+      ps: .018+Math.random()*.018,
+      c: ['#0D80E8','#3645E8','#54BA94'][Math.floor(Math.random()*3)]
+    });
+  }
+  function hr(h, a) {
+    const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    const g = ctx.createRadialGradient(W*.5,H*.38,0,W*.5,H*.38,Math.max(W,H)*.85);
+    g.addColorStop(0,'rgba(8,14,36,.98)');g.addColorStop(.55,'rgba(4,8,20,.99)');g.addColorStop(1,'rgba(2,4,10,1)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    [[W*.1,H*.15,300,'rgba(13,128,232,.05)'],[W*.9,H*.8,350,'rgba(54,69,232,.04)'],[W*.5,H*.5,180,'rgba(84,186,148,.03)']].forEach(([x,y,r,c]) => {
+      const rg = ctx.createRadialGradient(x,y,0,x,y,r);
+      rg.addColorStop(0,c); rg.addColorStop(1,'transparent');
+      ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+    });
+    for (let i=0; i<nodes.length; i++) for (let j=i+1; j<nodes.length; j++) {
+      const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y, d=Math.sqrt(dx*dx+dy*dy);
+      if (d<155) { ctx.strokeStyle=hr(nodes[i].c,(1-d/155)*.17); ctx.lineWidth=.7; ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke(); }
+    }
+    nodes.forEach(n => {
+      n.ph+=n.ps;
+      const g2=.55+.45*Math.sin(n.ph);
+      const og=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*7);
+      og.addColorStop(0,hr(n.c,.13*g2)); og.addColorStop(1,'transparent');
+      ctx.fillStyle=og; ctx.beginPath(); ctx.arc(n.x,n.y,n.r*7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=hr(n.c,.5+.5*g2); ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<-20)n.x=W+20; if(n.x>W+20)n.x=-20;
+      if(n.y<-20)n.y=H+20; if(n.y>H+20)n.y=-20;
+    });
+    raf = requestAnimationFrame(draw);
+  }
+  resize(); init(); draw();
+  addEventListener('resize', () => { cancelAnimationFrame(raf); resize(); init(); draw(); });
+})();
+
+/* ── PARTICLES ── */
+(function() {
+  const c = document.getElementById('particles');
+  const cols = ['rgba(13,128,232,.6)','rgba(54,69,232,.5)','rgba(84,186,148,.5)'];
+  for (let i=0; i<20; i++) {
+    const el = document.createElement('div'); el.className='particle';
+    const s = Math.random()*3+1.5;
+    el.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${cols[i%3]};animation-duration:${9+Math.random()*14}s;animation-delay:${Math.random()*14}s;`;
+    c.appendChild(el);
+  }
+})();
+
+/* ── STREAMS ── */
+(function() {
+  const c = document.getElementById('streams');
+  for (let i=0; i<12; i++) {
+    const el = document.createElement('div'); el.className='stream';
+    el.style.cssText = `left:${Math.random()*100}%;animation-duration:${5+Math.random()*9}s;animation-delay:${Math.random()*10}s;`;
+    c.appendChild(el);
+  }
+})();
+
+/* ════ RENDER ════ */
+function renderTeams() {
+  document.getElementById('teamsGrid').innerHTML = teams.map((t, i) => `
+    <div class="team-card${hasVoted?' voted':''}${selected===t.id?' selected':''}" id="card-${t.id}"
+         onclick="selectTeam(${t.id})"
+         style="animation:fadeUp .5s ${.06*i+.18}s ease both;background:${t.bg};--tc-accent:${t.accent};--tc-glow:${t.iconBg}">
+      <div class="sel-ring"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+      <div class="team-icon" style="background:${t.iconBg};border-color:${t.accent}30">${t.icon}</div>
+      <div class="team-number" style="color:${t.accent}99">${t.num}</div>
+      <div class="team-name">${t.name}</div>
+    </div>
+  `).join('');
+}
+
+function updateStatsUI() {
+  const total = Object.values(dbData.votes).reduce((s,v)=>s+v, 0);
+  document.getElementById('totalCount').textContent = total.toLocaleString('ar');
+}
+
+/* ════ LOGIN / LOGOUT ════ */
+function loginVisitor() {
+  const raw = document.getElementById('phoneInput').value.trim().replace(/\s|-/g,'');
+  if (!raw) { document.getElementById('phoneErr').textContent = 'يرجى إدخال رقم الجوال'; return; }
+  if (!/^5[0-9]{8}$/.test(raw)) { document.getElementById('phoneErr').textContent = 'أدخل رقماً صحيحاً (9 أرقام يبدأ بـ 5)'; return; }
+
+  const key = '966' + raw;
+
+  // Check if already voted (from Gist data)
+  const existing = dbData.voters.find(v => v.phone === key);
+  if (existing) {
+    const tname = teams.find(t => t.id === existing.teamId)?.name || '';
+    document.getElementById('phoneErr').textContent = 'هذا الرقم سبق وصوّت لـ ' + tname;
+    return;
+  }
+
+  currentUser = { phone: raw, key };
+  hasVoted = false; selected = null;
+
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('navUserChip').classList.remove('hidden');
+  document.getElementById('navLogoutBtn').classList.remove('hidden');
+  document.getElementById('adminNavBtn').classList.remove('hidden');
+  document.getElementById('navUserNum').textContent = '+966 ' + raw;
+  document.getElementById('navUserAvatar').textContent = raw.charAt(0);
+
+  renderTeams();
+  showToast('مرحباً! اختر فريقك 🎯');
+}
+
+function logoutVisitor() {
+  currentUser = null; hasVoted = false; selected = null;
+  document.getElementById('navUserChip').classList.add('hidden');
+  document.getElementById('navLogoutBtn').classList.add('hidden');
+  document.getElementById('adminNavBtn').classList.add('hidden');
+  document.getElementById('votedConfirm').classList.remove('show');
+  document.getElementById('voteArea').style.display = '';
+  document.getElementById('voteBtn').disabled = true;
+  document.getElementById('voteBtn').textContent = 'اختر فريقاً أولاً';
+  document.getElementById('voteHint').textContent = 'اضغط على الفريق المفضل لديك ثم استثمر';
+  document.getElementById('phoneInput').value = '';
+  clearPhoneErr();
+  renderTeams();
+  document.getElementById('loginOverlay').classList.remove('hidden');
+}
+
+/* ════ ADMIN ════ */
+function showAdminLogin() {
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('adminLoginOverlay').classList.remove('hidden');
+  document.getElementById('adminPassInput').value = '';
+  document.getElementById('adminErr').textContent = '';
+  setTimeout(() => document.getElementById('adminPassInput').focus(), 100);
+}
+function backToLogin() {
+  document.getElementById('adminLoginOverlay').classList.add('hidden');
+  if (!currentUser) document.getElementById('loginOverlay').classList.remove('hidden');
+}
+function adminLogin() {
+  if (document.getElementById('adminPassInput').value !== ADMIN_PASS) {
+    document.getElementById('adminErr').textContent = 'كلمة المرور غير صحيحة'; return;
+  }
+  isAdmin = true;
+  document.getElementById('adminLoginOverlay').classList.add('hidden');
+  document.getElementById('adminNavBtn').classList.add('hidden');
+  document.getElementById('exitAdminBtn').classList.remove('hidden');
+  showToast('✓ مرحباً في لوحة الإدارة', 'warn');
+  renderResults();
+}
+function exitAdmin() {
+  isAdmin = false;
+  document.getElementById('exitAdminBtn').classList.add('hidden');
+  if (currentUser) document.getElementById('adminNavBtn').classList.remove('hidden');
+  document.getElementById('resultsSection').classList.remove('show');
+}
+
+/* ════ SELECT ════ */
+function selectTeam(id) {
+  if (!currentUser) { showToast('سجّل دخولك أولاً', 'err'); return; }
+  if (hasVoted) return;
+  selected = id;
+  document.querySelectorAll('.team-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('card-'+id).classList.add('selected');
+  const team = teams.find(t => t.id === id);
+  document.getElementById('voteBtn').disabled = false;
+  document.getElementById('voteBtn').textContent = '✦ استثمر في ' + team.name;
+  document.getElementById('voteHint').textContent = 'اضغط لتأكيد استثمارك';
+}
+
+/* ════ SUBMIT VOTE ════ */
+async function submitVote() {
+  if (!selected || hasVoted || !currentUser || isSaving) return;
+  isSaving = true;
+
+  const btn = document.getElementById('voteBtn');
+  btn.disabled = true;
+  btn.innerHTML = 'جاري الحفظ...<span class="spinner"></span>';
+
+  try {
+    // 1. Fetch latest data first (avoid overwriting concurrent votes)
+    const latest = await gistRead();
+
+    // 2. Double-check: ensure this phone hasn't voted in the meantime
+    if (latest.voters.find(v => v.phone === currentUser.key)) {
+      showToast('هذا الرقم صوّت مسبقاً!', 'err');
+      isSaving = false;
+      btn.disabled = false;
+      btn.textContent = '✦ استثمر في ' + teams.find(t=>t.id===selected).name;
+      return;
+    }
+
+    const now = new Date().toLocaleString('ar-SA', {
+      hour12: true, hour:'2-digit', minute:'2-digit',
+      day:'2-digit', month:'2-digit', year:'numeric'
+    });
+
+    // 3. Update data
+    latest.votes = latest.votes || {};
+    latest.votes[selected] = (latest.votes[selected] || 0) + 1;
+    latest.voters = latest.voters || [];
+    latest.voters.push({ phone: currentUser.key, teamId: selected, time: now });
+
+    // 4. Write back to Gist
+    await gistWrite(latest);
+
+    // 5. Update local state
+    dbData = latest;
+    hasVoted = true;
+
+    const team = teams.find(t => t.id === selected);
+    document.getElementById('voteArea').style.display = 'none';
+    document.getElementById('confirmedMsg').textContent = 'تم تسجيل استثمارك في ' + team.name + ' بنجاح!';
+    document.getElementById('votedConfirm').classList.add('show');
+    document.querySelectorAll('.team-card').forEach(c => c.classList.add('voted'));
+    updateStatsUI();
+    showToast('✓ استثمرت في ' + team.name + '!');
+    if (isAdmin) renderResults();
+
+  } catch (err) {
+    console.error('Vote save error:', err);
+    showToast('خطأ في الحفظ، حاول مرة أخرى', 'err');
+    btn.disabled = false;
+    btn.textContent = '✦ استثمر في ' + teams.find(t=>t.id===selected).name;
+  } finally {
+    isSaving = false;
+  }
+}
+
+/* ════ RENDER RESULTS (admin only) ════ */
+function renderResults() {
+  const sec = document.getElementById('resultsSection');
+  sec.classList.add('show');
+
+  const votes = dbData.votes || {};
+  const voters = dbData.voters || [];
+  const total = Object.values(votes).reduce((s,v)=>s+(v||0), 0);
+
+  document.getElementById('totalVotesLabel').textContent = total.toLocaleString('ar') + ' استثمار';
+  document.getElementById('voterCount').textContent = voters.length;
+
+  const sorted = [...teams].sort((a,b) => (votes[b.id]||0) - (votes[a.id]||0));
+  const rk = ['gold','silver','bronze','','','',''];
+  const rs = ['🥇','🥈','🥉','4','5','6','7'];
+
+  document.getElementById('resultsList').innerHTML = sorted.map((t,i) => {
+    const cnt = votes[t.id] || 0;
+    const pct = total > 0 ? Math.round((cnt/total)*100) : 0;
+    return `
+      <div class="result-row${i===0&&total>0?' winner':''}" style="animation:fadeUp .35s ${i*.07}s ease both">
+        <div class="result-rank ${rk[i]||''}">${rs[i]}</div>
+        <div class="result-icon-sm" style="background:${t.iconBg};border-color:${t.accent}30">${t.icon}</div>
+        <div class="result-info">
+          <div class="result-name-row">
+            <span class="result-name">${t.name}</span>
+            ${i===0&&total>0?'<span class="badge-winner">متصدر</span>':''}
+          </div>
+          <div class="bar-wrap"><div class="bar-fill${i===0&&total>0?' winner':''}" data-pct="${pct}" style="${i>0?'background:'+t.accent+'55':''}"></div></div>
+        </div>
+        <div class="result-pct-col">
+          <div class="result-pct" style="color:${t.accent}">${pct}%</div>
+          <div class="result-count">${cnt.toLocaleString('ar')} استثمار</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Voters table
+  document.getElementById('votersBody').innerHTML = voters.length === 0
+    ? `<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:1.5rem">لا يوجد مستثمرون بعد</td></tr>`
+    : voters.map((v, i) => {
+        const team = teams.find(t => t.id === v.teamId);
+        const dispPhone = '+966 ' + String(v.phone).slice(3);
+        return `<tr>
+          <td style="color:var(--text3)">${i+1}</td>
+          <td style="direction:ltr;font-family:monospace;font-size:12px">${dispPhone}</td>
+          <td><span class="v-badge" style="background:${team?.iconBg||'transparent'};color:${team?.accent||'#fff'};border:1px solid ${team?.accent||'#fff'}33">${team?.icon||''} ${team?.name||'؟'}</span></td>
+          <td style="font-size:11px">${v.time}</td>
+          <td><button onclick="adminDeleteVote(${i})" style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.22);color:#f87171;font-size:10px;padding:3px 8px;border-radius:10px;cursor:pointer;font-family:'Cairo',sans-serif">حذف</button></td>
+        </tr>`;
+      }).join('');
+
+  setTimeout(() => document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; }), 200);
+}
+
+/* ════ ADMIN ACTIONS ════ */
+async function adminDeleteVote(idx) {
+  if (!confirm('هل تريد حذف هذا الصوت؟')) return;
+  try {
+    const latest = await gistRead();
+    const entry = latest.voters[idx];
+    if (!entry) return;
+    latest.votes[entry.teamId] = Math.max(0, (latest.votes[entry.teamId]||0) - 1);
+    latest.voters.splice(idx, 1);
+    await gistWrite(latest);
+    dbData = latest;
+    updateStatsUI();
+    renderResults();
+    showToast('✓ تم حذف الصوت', 'warn');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+}
+
+async function adminResetAll() {
+  if (!confirm('إعادة تعيين جميع الأصوات؟\nلا يمكن التراجع عن هذا الإجراء.')) return;
+  try {
+    const fresh = { votes: {1:0,2:0,3:0,4:0,5:0,6:0,7:0}, voters: [] };
+    await gistWrite(fresh);
+    dbData = fresh;
+    if (currentUser) {
+      hasVoted = false; selected = null;
+      document.getElementById('voteArea').style.display = '';
+      document.getElementById('voteBtn').disabled = true;
+      document.getElementById('voteBtn').textContent = 'اختر فريقاً أولاً';
+      document.getElementById('voteHint').textContent = 'اضغط على الفريق المفضل لديك ثم استثمر';
+      document.getElementById('votedConfirm').classList.remove('show');
+      renderTeams();
+    }
+    updateStatsUI();
+    renderResults();
+    showToast('✓ تم إعادة تعيين جميع الأصوات', 'warn');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+}
+
+/* ════ INIT — load from Gist on page open ════ */
+async function init() {
+  try {
+    dbData = await gistRead();
+  } catch (err) {
+    console.warn('Could not load from Gist, using defaults:', err);
+    dbData = { votes: {1:0,2:0,3:0,4:0,5:0,6:0,7:0}, voters: [] };
+  }
+  updateStatsUI();
+  renderTeams();
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+}
+
+init();
+</script>
+</body>
+</html>
