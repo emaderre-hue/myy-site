@@ -339,11 +339,10 @@ footer{text-align:center;padding:1.5rem 1rem;font-size:12px;color:var(--text3);b
 /* ════════════════════════════════════════════
    CONFIG — GitHub Gist as backend database
 ════════════════════════════════════════════ */
-const GIST_ID    = '1fae2f1477560df32188b623bbecbc5d';
-const GH_TOKEN   = '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';
-const FILE_NAME  = 'votes.json';
+const BIN_URL    = 'https://api.jsonbin.io/v3/b/69f1e9a8856a682189878865';
+const MASTER_KEY = '$2a$10$wD1UCQPLwGk6PMK3ManbGO.UHf4tlplXLPHh9RjopNkmGVeZ8IWe6';
+const ACCESS_KEY = '$2a$10$HtiT7a15MP278J.EFpYzqeBcllRJz.Mtlda3rVD3AuaUiO6CpOjlq';
 const ADMIN_PASS = 'admin2025';
-const API_BASE   = `https://api.github.com/gists/${GIST_ID}`;
 
 /* ════ TEAMS ════ */
 const teams = [
@@ -368,40 +367,25 @@ let isSaving     = false;
    GIST API — READ
 ════════════════════════════════════════════ */
 async function gistRead() {
-  const r = await fetch(API_BASE, {
-    headers: {
-      'Authorization': `token ${GH_TOKEN}`,
-      'Accept': 'application/vnd.github+json'
-    }
+  const r = await fetch(BIN_URL + '/latest', {
+    headers: { 'X-Master-Key': MASTER_KEY, 'X-Access-Key': ACCESS_KEY }
   });
-  if (!r.ok) throw new Error(`Gist read failed: ${r.status}`);
+  if (!r.ok) throw new Error(`Read failed: ${r.status}`);
   const json = await r.json();
-  const content = json.files[FILE_NAME]?.content;
-  if (!content) throw new Error('votes.json not found in Gist');
-  return JSON.parse(content);
+  return json.record;
 }
 
-/* ════════════════════════════════════════════
-   GIST API — WRITE
-════════════════════════════════════════════ */
 async function gistWrite(data) {
-  const r = await fetch(API_BASE, {
-    method: 'PATCH',
+  const r = await fetch(BIN_URL, {
+    method: 'PUT',
     headers: {
-      'Authorization': `token ${GH_TOKEN}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-Master-Key': MASTER_KEY,
+      'X-Access-Key': ACCESS_KEY
     },
-    body: JSON.stringify({
-      files: {
-        [FILE_NAME]: { content: JSON.stringify(data, null, 2) }
-      }
-    })
+    body: JSON.stringify(data)
   });
-  if (!r.ok) {
-    const err = await r.text();
-    throw new Error(`Gist write failed: ${r.status} — ${err}`);
-  }
+  if (!r.ok) throw new Error(`Write failed: ${r.status}`);
   return true;
 }
 
