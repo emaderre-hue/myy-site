@@ -287,7 +287,7 @@ footer{text-align:center;padding:1.5rem 1rem;font-size:12px;color:var(--text3);b
       <div class="stat-label">إجمالي الاستثمارات</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">7</div>
+      <div class="stat-num">8</div>
       <div class="stat-label">فرق منافسة</div>
     </div>
   </div>
@@ -353,6 +353,7 @@ const teams = [
   {id:5,name:'فريق محمد وقاص',         num:'TEAM 05',icon:'🔬',bg:'linear-gradient(145deg,#16120a,#2a2010)',accent:'#fbbf24',iconBg:'rgba(251,191,36,0.15)'},
   {id:6,name:'فريق أحمد عفيفي',        num:'TEAM 06',icon:'📡',bg:'linear-gradient(145deg,#080c1a,#101830)',accent:'#0D80E8',iconBg:'rgba(13,128,232,0.15)'},
   {id:7,name:'فريق هادي الغانم',       num:'TEAM 07',icon:'🛸',bg:'linear-gradient(145deg,#120614,#200a24)',accent:'#e879f9',iconBg:'rgba(232,121,249,0.15)'},
+  {id:8,name:'فريق عمر الزعارير',      num:'TEAM 08',icon:'🌐',bg:'linear-gradient(145deg,#0a1a14,#0f2e22)',accent:'#34d399',iconBg:'rgba(52,211,153,0.15)'},
 ];
 
 /* ════ STATE ════ */
@@ -655,8 +656,8 @@ function renderResults() {
   document.getElementById('voterCount').textContent = voters.length;
 
   const sorted = [...teams].sort((a,b) => (votes[b.id]||0) - (votes[a.id]||0));
-  const rk = ['gold','silver','bronze','','','',''];
-  const rs = ['🥇','🥈','🥉','4','5','6','7'];
+  const rk = ['gold','silver','bronze','','','','',''];
+  const rs = ['🥇','🥈','🥉','4','5','6','7','8'];
 
   document.getElementById('resultsList').innerHTML = sorted.map((t,i) => {
     const cnt = votes[t.id] || 0;
@@ -719,7 +720,7 @@ async function adminDeleteVote(idx) {
 async function adminResetAll() {
   if (!confirm('إعادة تعيين جميع الأصوات؟\nلا يمكن التراجع عن هذا الإجراء.')) return;
   try {
-    const fresh = { votes: {1:0,2:0,3:0,4:0,5:0,6:0,7:0}, voters: [] };
+    const fresh = { votes: {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0}, voters: [] };
     await gistWrite(fresh);
     dbData = fresh;
     if (currentUser) {
